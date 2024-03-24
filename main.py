@@ -5,6 +5,8 @@ import minify_html
 import pyperclip
 import requests
 import base64
+import json
+
 
 from constants import *
 
@@ -85,12 +87,7 @@ client = anthropic.Anthropic(
 HAIKU_MODEL="claude-3-haiku-20240307"
 SONNET_MODEL="claude-3-sonnet-20240229"
 
-message = client.messages.create(
-    model=SONNET_MODEL,
-    max_tokens=1024,
-    system=SYSTEM_PROMPT,
-    messages=[
-        {
+messages=[{
             "role": "user",
             "content": [
                 {
@@ -115,23 +112,52 @@ message = client.messages.create(
                     "text": 'Based on the information provided in the image, it appears that this is the landing page for the ProduHacks event organized by UBC BizTech. The image does not seem to have any direct contact information for BizTech. However, the navigation bar at the top of the page has several sections, including "About", "Schedule", "Tickets", "Testimonial", "Judges", and "Mentors". \n\nTo find how to contact BizTech, I would first click on the "About" section, as that is often where organizations provide their contact information. If the "About" section does not contain the contact details, I would then explore the other sections, such as "Judges" or "Mentors", as they may provide additional information about the organizers and how to get in touch with them.\n\nIf I still cannot find the contact information for BizTech after exploring the different sections, I would try to locate a "Contact" or "Get in Touch" page or link on the website. Alternatively, I may try searching for "UBC BizTech contact" or similar queries on the website to see if I can find the necessary information.' 
                 },
             ]
-        },
-        {
-            "role": "user",
-            "content": [
-                {
-                    "type": "text",
-                    "text": f"""Here is the DOM, please return one and only one line of code without other context 
-                            that I can directly paste as part of the code is in selenium console 
-                            so I can move on from this screenshot and take another one for you to analyze.
-                            If and only if it's a button, try to do something like document.querySelector("insert identifer").click()
-                            and try your best to select the button accurately
-                            {SHORTEN_PRODU_DOM}
-                        """
-                }
-            ]
-        }
-    ]
-)
+        }]
 
-print(message)
+MAX_LOOP = 1
+
+while MAX_LOOP > 0:
+    messages.append(
+            {
+                "role": "user",
+                "content": [
+                    {
+                        "type": "text",
+                        "text": f"""Here is the current DOM of the webpage I'm on:
+                                    {SHORTEN_PRODU_DOM}
+
+                                    Based on this DOM, please provide the next best action to take using Selenium to navigate through the site and complete the intended task.
+
+                                    Return your response in the following JSON format without any additional context or explanation:
+
+                                    {{
+                                    "selector": "(CSS selector for the element to interact with)",
+                                    "action": "(Selenium action to take, e.g. click, type, etc.)",
+                                    "value": "(Value to input if the action involves typing or selecting, otherwise null)",
+                                    "complete": (true if the overall task is now complete, false if further actions are needed),
+                                    "intention": "(Brief description of the purpose/intention behind this action as a user using the website for the first time)"
+                                    }}
+
+                                    It's critical that the CSS selector for buttons is as precise as possible. Only include the "value" field if the action requires inputting or selecting a value.
+                                """
+                    }
+                ]
+            }
+        )
+
+    message = client.messages.create(
+        model=SONNET_MODEL,
+        max_tokens=1024,
+        system=SYSTEM_PROMPT,
+        messages=messages
+    )
+
+    response = json.loads(message.content[0].text)
+    if response["complete"]:
+        break
+
+
+    # messages.append(response)
+    MAX_LOOP -= 1
+
+EXAMPLE_RESPONSE={'selector': "a.nav-link-45.produhacks2024[href='#Tickets']", 'action': 'click', 'value': None, 'complete': False, 'intention': 'Navigate to the Tickets section to find ticket price information'}
