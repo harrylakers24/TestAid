@@ -70,7 +70,7 @@ const RealTimeComponent = () => {
       {currentPage === Pages.START && (
         <div>
           <img
-            src="../images/image.png"
+            src={require("../images/image.png")}
             alt="Description"
             className="logo-image"
           />
@@ -91,24 +91,24 @@ const RealTimeComponent = () => {
       {currentPage === Pages.PROMPT && (
         <div>
           <img
-            src="../images/image.png"
+            src={require("../images/image.png")}
             alt="Description"
             className="logo-image"
           />
           <div className="input-container">
             <h1 className="instruction-text">
-              Enter the link and prompt you wish to test
+              Enter the link and prompt you wish to test:
             </h1>
             <input
               onChange={(e) => onChange(PROMPT, e.target.value)}
               type="text"
-              placeholder="Enter your prompt"
+              placeholder="prompt:"
               className="text-box"
             />
             <input
               onChange={(e) => onChange(URL, e.target.value)}
               type="text"
-              placeholder="Enter your URL"
+              placeholder="link:"
               className="text-box"
             />
             <button onClick={onClick} className="submit-button">
