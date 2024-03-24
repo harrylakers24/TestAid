@@ -10,10 +10,10 @@ const RealTimeComponent = () => {
     const [socket, setSocket] = useState(null);
     // Adding a state to track reconnection attempts
     const [reconnectAttempt, setReconnectAttempt] = useState(0);
-    const [explanation, setExplanation] = useState('Empty');
+    const [explanation, setExplanation] = useState([]);
 
     const handleLiveFeedback = (data) => {
-        setExplanation(data);
+        setExplanation(explanation => [...explanation, data]);
     }
 
     useEffect(() => {
@@ -63,7 +63,11 @@ const RealTimeComponent = () => {
             <input onChange={(e) => onChange(URL, e.target.value)} type="text" placeholder="Enter your URL" />
             <button onClick={onClick}>Submit</button>
             <button onClick={reconnect}>Reconnect</button>
-            <p>{explanation}</p>
+            <div>
+                {explanation.map((exp, index) => (
+                    <p key={index}>{exp}</p>
+                ))}
+            </div>
         </div>
     );
 };

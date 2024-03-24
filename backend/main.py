@@ -68,7 +68,7 @@ def start_ai(url = "https://www.ubcbiztech.com/produhacks-2024", prompt = 'Pleas
     messages=[]
     messages.append(first_screenshot_prompt_obj(encoded_image, prompt))
     messages.append(first_assistant_prompt_obj(SHORTEN_PRODU_DOM))
-    messages.append(first_dom_prompt_obj())
+    messages.append(first_dom_prompt_obj(prompt))
 
     MAX_LOOP = 2
 
@@ -85,18 +85,11 @@ def start_ai(url = "https://www.ubcbiztech.com/produhacks-2024", prompt = 'Pleas
         
         response = json.loads(message.content[0].text)
         if response["complete"]:
+            socketio.emit('liveFeedback', response['explanation'])
             break
 
         # print the response and specify which loop
         print(f"Loop {MAX_LOOP}: {response}")
-
-        # EXAMPLE_RESPONSE = {
-        #     'selector': "a.nav-link-45.produhacks2024[href='#Tickets']",
-        #     'action': 'click',
-        #     'value': None,
-        #     'complete': False,
-        #     'explanation': 'Navigate to the Tickets section to find ticket price information'
-        # }
 
         # Wait for a short period to ensure the page has loaded
         time.sleep(1)
@@ -108,7 +101,7 @@ def start_ai(url = "https://www.ubcbiztech.com/produhacks-2024", prompt = 'Pleas
         element.click()
 
         # Close the browser window after a short delay to observe the action
-        time.sleep(1)  # This wait is optional, just to observe the click action
+        time.sleep(2)  # This wait is optional, just to observe the click action
 
         # Take a screenshot and save it to a file
         screenshot_name = f'produ_screenshot_{MAX_LOOP}.png'
@@ -121,7 +114,7 @@ def start_ai(url = "https://www.ubcbiztech.com/produhacks-2024", prompt = 'Pleas
         encoded_image = base64.b64encode(image_data).decode("utf-8")
 
         messages.append(cont_from_explanation_obj(response["explanation"]))
-        messages.append(cont_from_screenshot_prompt_obj(encoded_image))
+        messages.append(cont_from_screenshot_prompt_obj(encoded_image, prompt))
 
         socketio.emit('liveFeedback', response['explanation'])
 
