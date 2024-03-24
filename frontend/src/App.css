@@ -51,10 +51,30 @@
   padding-top: 15px;
 }
 
+.big-robot-image-left {
+  position: absolute;
+  top: 550px;
+  left: 380px;
+  bottom: 800px;
+  width: 150px; /* Adjust the size as needed */
+  height: auto; /* Maintain aspect ratio */
+  padding-left: 30px;
+  padding-top: 15px;
+}
 .big-robot-image {
   position: absolute;
   top: 550px;
   left: 380px;
+  bottom: 800px;
+  width: 150px; /* Adjust the size as needed */
+  height: auto; /* Maintain aspect ratio */
+  padding-left: 30px;
+  padding-top: 15px;
+}
+.big-robot-image-right {
+  position: absolute;
+  top: 550px;
+  right: 380px;
   bottom: 800px;
   width: 150px; /* Adjust the size as needed */
   height: auto; /* Maintain aspect ratio */

@@ -65,7 +65,7 @@ def start_ai(url = "https://www.ubcbiztech.com/produhacks-2024", prompt = 'Pleas
 
     # By now we have screenshot of landing page
     # persona = SCREEN_READER_USER_PERSONA
-    persona = DEFAULT_READER_USER_PERSONA
+    # persona = DEFAULT_READER_USER_PERSONA
 
     messages=[]
     messages.append(first_screenshot_prompt_obj(encoded_image, prompt))
@@ -132,6 +132,14 @@ def start_ai(url = "https://www.ubcbiztech.com/produhacks-2024", prompt = 'Pleas
     # print(messages)
     print(response)
 
+def get_persona(persona: str):
+    if persona == "screen_reader":
+        return SCREEN_READER_USER_PERSONA
+    elif persona == "default":
+        return DEFAULT_READER_USER_PERSONA
+    else:
+        return DEFAULT_READER_USER_PERSONA
+
 app = Flask(__name__)
 socketio = SocketIO(app, cors_allowed_origins="*")  # For testing purposes only
 
@@ -143,6 +151,6 @@ def handle_connect():
 @socketio.on('prompt')
 def handle_prompt(prompt):
     print(prompt)
-    start_ai(prompt['url'], prompt['prompt'], prompt['persona'] if 'persona' in prompt else None)
+    start_ai(prompt['url'], prompt['prompt'], get_persona(prompt['persona'] if 'persona' in prompt else 'default'))
 
 socketio.run(app, debug=True)

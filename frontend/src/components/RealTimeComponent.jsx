@@ -19,6 +19,7 @@ const RealTimeComponent = () => {
   const [reconnectAttempt, setReconnectAttempt] = useState(0);
   const [debug, setDebug] = useState(true); // Added debug state
   const [currentPage, setCurrentPage] = useState(Pages.START); // State to track the current page
+  const [persona, setPersona] = useState("default")
 
   const [explanation, setExplanation] = useState([]);
 
@@ -47,6 +48,19 @@ const RealTimeComponent = () => {
     };
   }, [reconnectAttempt]); // Re-run this effect when `reconnectAttempt` changes
 
+  useEffect(() => {
+    if (persona === 'default' && currentPage === Pages.PROMPT) {
+      document.getElementById('default').style.border = '2px solid #000000';
+      document.getElementById('default').style.borderRadius = '5%';
+      document.getElementById('screen_reader').style.border = 'none';
+    }
+    else if (persona === 'screen_reader' && currentPage === Pages.PROMPT) {
+      document.getElementById('screen_reader').style.border = '2px solid #000000';
+      document.getElementById('screen_reader').style.borderRadius = '5%';
+      document.getElementById('default').style.border = 'none';
+    }
+  }, [persona])
+
   const onChange = (category, value) => {
     if (category === PROMPT) {
       setPrompt(value);
@@ -57,7 +71,7 @@ const RealTimeComponent = () => {
 
   const onClick = () => {
     if (socket) {
-      socket.emit("prompt", { prompt, url });
+      socket.emit("prompt", { prompt, url, persona });
       setCurrentPage(Pages.RESULT);
     }
   };
@@ -78,14 +92,6 @@ const RealTimeComponent = () => {
       {currentPage === Pages.START && (
         <div>
           <div className="test-aid-container">
-            {/* <div className="speech-bubble">
-              <p className="instruction-text">
-                Hi there! 👋 I'm TestAid, your AI-driven companion for user
-                testing. By mimicking user interactions, I help evaluate digital
-                products by pin-pointing issues and providing feedback to
-                enhance the user experience.
-              </p>
-            </div> */}
           <svg width="749" height="417" viewBox="0 0 749 417" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M63.375 345.194C63.375 334.778 58.965 319.927 58.965 319.927L100.854 323.298C100.854 323.298 93.5381 339.061 87.6704 347.149C76.0457 363.172 34.4527 411.589 34.4527 411.589C34.4527 411.589 63.375 370.735 63.375 345.194Z" stroke="black" stroke-width="2.5"/>
             <rect x="1" y="1" width="747" height="324.723" rx="41" fill="#FFFDFD" stroke="black" stroke-width="2"/>
@@ -121,9 +127,18 @@ const RealTimeComponent = () => {
             className="logo-image"
           />
           <img
+            id="default"
             src={require("../images/big-robot.png")}
-            alt="Description"
-            className="big-robot-image"
+            alt="click to select default persona"
+            className="big-robot-image-left"
+            onClick={() => setPersona('default')}
+          />
+          <img
+            id="screen_reader"
+            src={require("../images/screen-reader-persona.png")}
+            alt="click to select screen reader persona"
+            className="big-robot-image-right"
+            onClick={() => setPersona('screen_reader')}
           />
           <div className="input-container">
             <h1 className="instruction-text">

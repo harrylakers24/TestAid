@@ -48,6 +48,8 @@ SCREEN_READER_USER_PERSONA = {
                 Please provide me with the DOM structure of the page, as it will help me understand the underlying HTML elements and their roles in the page's accessibility.
 
                 But I will only be reading the DOM equivalent of what's within the image and not read ahead.
+
+                I understand that it might take a little bit for the page to update when I click on things.
                 """,
 
         "cont_dom": """
