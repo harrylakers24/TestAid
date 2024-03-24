@@ -121,7 +121,7 @@ const RealTimeComponent = () => {
             className="logo-image"
           />
           <img
-            src={require("../images/BigRobot.png")}
+            src={require("../images/big-robot.png")}
             alt="Description"
             className="big-robot-image"
           />
