@@ -74,6 +74,43 @@
 
 }
 
+.test-aid-container {
+  flex-direction: column;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full height of the viewport */
+}
+
+.speech-bubble {
+  position: relative;
+  background: #fff;
+  border-radius: 25px;
+  padding: 20px;
+  margin: 20px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+  max-width: 600px; /* Adjust based on your preference */
+  text-align: left; /* Aligns text to the left */
+}
+
+.speech-bubble:after {
+  content: ''; /* This property is necessary and must not be omitted */
+  position: absolute; /* Positions the pseudo-element relative to the speech bubble */
+  bottom: -10px; /* Negative value to position the tail below the speech bubble */
+  left: 50%; /* Start at 50% from the left */
+  border-width: 15px; /* Size of the tail */
+  border-style: solid; /* Required for the border to show */
+  border-color: transparent transparent #fff transparent; /* Only the top border shows */
+  margin-left: -15px; /* Half the width of the tail to center it */
+  transform: translateX(-50%); /* Ensures the tail is centered at the bottom */
+}
+
+.speech-bubble p {
+  margin: 0;
+  color: #000; /* Or any color you prefer */
+  font-size: 18px; /* Adjust based on your preference */
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);

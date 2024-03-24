@@ -67,24 +67,34 @@ const RealTimeComponent = () => {
 
   return (
     <div>
+      <img
+        src={require("../images/image.png")}
+        alt="Description"
+        className="logo-image"
+      />
+
       {currentPage === Pages.START && (
         <div>
-          <img
-            src={require("../images/image.png")}
-            alt="Description"
-            className="logo-image"
-          />
-
-          <button
-            onClick={() => setCurrentPage(Pages.PROMPT)}
-            className="submit-button"
-          >
-            Start Here
-          </button>
-          <div>
-            {explanation.map((exp, index) => (
-              <p key={index}>{exp}</p>
-            ))}
+          <div className="test-aid-container">
+            <div className="speech-bubble">
+              <p className="instruction-text">
+                Hi there! 👋 I'm TestAid, your AI-driven companion for user
+                testing. By mimicking user interactions, I help evaluate digital
+                products by pin-pointing issues and providing feedback to
+                enhance the user experience.
+              </p>
+            </div>
+            <button
+              onClick={() => setCurrentPage(Pages.PROMPT)}
+              className="submit-button"
+            >
+              Start Here
+            </button>
+            <div>
+              {explanation.map((exp, index) => (
+                <p key={index}>{exp}</p>
+              ))}
+            </div>
           </div>
         </div>
       )}
