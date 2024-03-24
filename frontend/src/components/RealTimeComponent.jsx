@@ -16,7 +16,7 @@ const RealTimeComponent = () => {
   const [socket, setSocket] = useState(null);
   // Adding a state to track reconnection attempts
   const [reconnectAttempt, setReconnectAttempt] = useState(0);
-  const [debug, setDebug] = useState(false); // Added debug state
+  const [debug, setDebug] = useState(true); // Added debug state
   const [currentPage, setCurrentPage] = useState(Pages.START); // State to track the current page
 
   const [explanation, setExplanation] = useState([]);
@@ -57,6 +57,7 @@ const RealTimeComponent = () => {
   const onClick = () => {
     if (socket) {
       socket.emit("prompt", { prompt, url });
+      setCurrentPage(Pages.RESULT);
     }
   };
 
@@ -141,6 +142,37 @@ const RealTimeComponent = () => {
             </button>
           )}
         </div>
+      )}
+      {currentPage === Pages.RESULT && (
+        <>
+          <div className="results-layout-container">
+            {/* Left side content */}
+            <div className="results-content">
+              <div className="speech-bubble">
+                <p className="instruction-text">
+                  Here are the results of the test. Click the button below to start a new test.
+                </p>
+              </div>
+              <img
+                src={require("../images/BigRobot.png")}
+                alt="Description"
+                className="big-robot-image"
+              />
+              <button
+                onClick={() => setCurrentPage(Pages.PROMPT)}
+                className="submit-button"
+              >
+                New Test
+              </button>
+            </div>
+            
+            <div className="explanation-container">
+              {explanation.map((exp, index) => (
+                <p className="response-bubble" key={index}>{exp}</p>
+              ))}
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

@@ -64,27 +64,33 @@ def start_ai(url = "https://www.ubcbiztech.com/produhacks-2024", prompt = 'Pleas
     OPUS_MODEL="claude-3-opus-20240229"
 
     # By now we have screenshot of landing page
+    # persona = SCREEN_READER_USER_PERSONA
+    persona = DEFAULT_READER_USER_PERSONA
 
     messages=[]
     messages.append(first_screenshot_prompt_obj(encoded_image, prompt))
     messages.append(first_assistant_prompt_obj(SHORTEN_PRODU_DOM))
-    messages.append(first_dom_prompt_obj(prompt))
+    messages.append(first_dom_prompt_obj(prompt, persona))
 
-    MAX_LOOP = 2
+    MAX_LOOP = 3
 
     while MAX_LOOP > 0:
 
         message = client.messages.create(
             model=SONNET_MODEL,
             max_tokens=1024,
-            system=SYSTEM_PROMPT,
+            system=persona["system_prompt"],
             messages=messages
         )
 
-        # print(f"Loop {MAX_LOOP} plain text:{message.content[0].text}")
+        print(f"Loop {MAX_LOOP} plain text:{message.content[0].text}")
         
         response = json.loads(message.content[0].text)
         if response["complete"]:
+            socketio.emit('liveFeedback', response['explanation'])
+            break
+
+        if response["selector"] == None:
             socketio.emit('liveFeedback', response['explanation'])
             break
 
@@ -114,7 +120,7 @@ def start_ai(url = "https://www.ubcbiztech.com/produhacks-2024", prompt = 'Pleas
         encoded_image = base64.b64encode(image_data).decode("utf-8")
 
         messages.append(cont_from_explanation_obj(response["explanation"]))
-        messages.append(cont_from_screenshot_prompt_obj(encoded_image, prompt))
+        messages.append(cont_from_screenshot_prompt_obj(encoded_image, prompt, persona))
 
         socketio.emit('liveFeedback', response['explanation'])
 
