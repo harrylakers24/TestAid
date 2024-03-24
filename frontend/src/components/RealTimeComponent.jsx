@@ -17,7 +17,7 @@ const RealTimeComponent = () => {
   const [socket, setSocket] = useState(null);
   // Adding a state to track reconnection attempts
   const [reconnectAttempt, setReconnectAttempt] = useState(0);
-  const [debug, setDebug] = useState(true); // Added debug state
+  const [debug, setDebug] = useState(false); // Added debug state
   const [currentPage, setCurrentPage] = useState(Pages.START); // State to track the current page
   const [persona, setPersona] = useState("default")
 
