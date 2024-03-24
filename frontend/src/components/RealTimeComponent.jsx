@@ -19,6 +19,12 @@ const RealTimeComponent = () => {
   const [debug, setDebug] = useState(false); // Added debug state
   const [currentPage, setCurrentPage] = useState(Pages.START); // State to track the current page
 
+  const [explanation, setExplanation] = useState([]);
+
+  const handleLiveFeedback = (data) => {
+    setExplanation((explanation) => [...explanation, data]);
+  };
+
   useEffect(() => {
     // Creating a new socket connection
     const newSocket = io("ws://127.0.0.1:5000");
@@ -29,6 +35,8 @@ const RealTimeComponent = () => {
     newSocket.on("disconnect", () => {
       console.log("Disconnected");
     });
+
+    newSocket.on("liveFeedback", handleLiveFeedback);
 
     setSocket(newSocket);
 
@@ -73,6 +81,11 @@ const RealTimeComponent = () => {
           >
             Start Here
           </button>
+          <div>
+            {explanation.map((exp, index) => (
+              <p key={index}>{exp}</p>
+            ))}
+          </div>
         </div>
       )}
       {currentPage === Pages.PROMPT && (
