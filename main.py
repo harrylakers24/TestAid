@@ -10,6 +10,7 @@ import requests
 import base64
 import json
 
+from prompt_factory import *
 
 from httpcore import TimeoutException
 from selenium.webdriver.common.by import By
@@ -48,9 +49,6 @@ html_content = response.text
 
 minified = minify_html.minify(html_content, minify_js=True, minify_css=True, ensure_spec_compliant_unquoted_attribute_values=True, keep_spaces_between_attributes=True)
 
-# Close the browser window
-# driver.quit()
-
 # Sending image to chatgpt
 # Step 1: Read the image
 with open("produ_screenshot.png", "rb") as image_file:
@@ -59,160 +57,87 @@ with open("produ_screenshot.png", "rb") as image_file:
 # Step 2: Encode the image in base64
 encoded_image = base64.b64encode(image_data).decode("utf-8")
 
-
-# Prepare the API request data
-# Note: Replace 'YOUR_API_KEY' with your actual API key and adjust the 'data' dictionary according to the API's requirements.
-# headers = {
-#     "Authorization": os.environ["OPENAI_API_KEY"],
-#     "Content-Type": "application/json",
-# }
-
-# data = {
-#     "model": "gpt-3.5-turbo-0125",
-#     "messages": [{
-#         "role": "system",
-#         "content": "I want to find contact information, what do I click"
-#     }, {
-#         "role": "user",
-#         "content": encoded_image  # Or however the API expects the image data
-#     }]
-# }
-
-# response = requests.post("https://api.openai.com/v1/chat/completions", headers=headers, json=data)
-
-# Step 5: Handle the response
-# if response.status_code == 200:
-#     print(response.json())
-# else:
-#     print("Error:", response.status_code, response.text)
-
-
 client = anthropic.Anthropic(
     api_key=os.environ["ANTHROPIC_API_KEY"],
 )
 
 HAIKU_MODEL="claude-3-haiku-20240307"
 SONNET_MODEL="claude-3-sonnet-20240229"
+OPUS_MODEL="claude-3-opus-20240229"
 
-messages=[{
-            "role": "user",
-            "content": [
-                {
-                    "type": "image",
-                    "source": {
-                        "type": "base64",
-                        "media_type": 'image/png',
-                        "data": encoded_image,
-                    },
-                },
-                {
-                    "type": "text",
-                    "text": INITIAL_PROMPT
-                },
-            ],
-        },
-        {
-            "role": "assistant",
-            "content": [
-                {
-                    "type": "text",
-                    "text": 'Based on the information provided in the image, it appears that this is the landing page for the ProduHacks event organized by UBC BizTech. The image does not seem to have any direct contact information for BizTech. However, the navigation bar at the top of the page has several sections, including "About", "Schedule", "Tickets", "Testimonial", "Judges", and "Mentors". \n\nTo find how to contact BizTech, I would first click on the "About" section, as that is often where organizations provide their contact information. If the "About" section does not contain the contact details, I would then explore the other sections, such as "Judges" or "Mentors", as they may provide additional information about the organizers and how to get in touch with them.\n\nIf I still cannot find the contact information for BizTech after exploring the different sections, I would try to locate a "Contact" or "Get in Touch" page or link on the website. Alternatively, I may try searching for "UBC BizTech contact" or similar queries on the website to see if I can find the necessary information.' 
-                },
-            ]
-        }]
+# By now we have screenshot of landing page
 
-INITIAL_DOM_PROMPT = f"""Here is the current DOM of the webpage I'm on:
-                        {SHORTEN_PRODU_DOM}
+messages=[]
+messages.append(first_screenshot_prompt_obj(encoded_image, 'Please navigate and find the ticket price.'))
+messages.append(first_assistant_prompt_obj(SHORTEN_PRODU_DOM))
+messages.append(first_dom_prompt_obj())
 
-                        Based on this DOM, please provide the next best action to take using Selenium to navigate through the site and complete the intended task.
+# UNCOMMENT WHEN COMPLETE: ACTUAL RESPONSE
+# message = client.messages.create(
+#     model=SONNET_MODEL,
+#     max_tokens=1024,
+#     system=SYSTEM_PROMPT,
+#     messages=messages
+# )
 
-                        Return your response in the following JSON format without any additional context or explanation:
 
-                        {{
-                        "selector": "(CSS selector for the element to interact with)",
-                        "action": "(Selenium action to take, e.g. click, type, etc.)",
-                        "value": "(Value to input if the action involves typing or selecting, otherwise null)",
-                        "complete": (true if the overall task is now complete, false if further actions are needed),
-                        "intention": "(Brief description of the purpose/intention behind this action as a user using the website for the first time)"
-                        }}
-
-                        It's critical that the CSS selector for buttons is as precise as possible. Only include the "value" field if the action requires inputting or selecting a value.
-                    """
-
-MAX_LOOP = 1
-
-def cont_from_screenshot_prompt(image_data):
-    return f"""
-        Here is the updated screenshot of the webpage after taking the previous action:
-
-        {image_data}
-
-        The DOM is the same as before.
-
-        Based on the new state of the webpage given in the image, please provide the next best action to continue navigating through the site and complete the intended task of finding the contact information for UBC BizTech.
-
-        {{
-        "selector": "(CSS selector for the element to interact with)",
-        "action": "(Selenium action to take, e.g. click, type, etc.)",
-        "value": "(Value to input if the action involves typing or selecting, otherwise null)",
-        "complete": false,
-        "intention": "(Brief description of the purpose/intention behind this action as a user using the website for the first time)"
-        }}
-
-        If there are no more relevant actions to take on the current page, suggest navigating back to the previous page or to a different section of the website.
-    """
+MAX_LOOP = 2
 
 while MAX_LOOP > 0:
-    messages.append(
-            {
-                "role": "user",
-                "content": [
-                    {
-                        "type": "text",
-                        "text": cont_from_screenshot_prompt(encoded_image)
-                    }
-                ]
-            }
-        )
 
-    # message = client.messages.create(
-    #     model=SONNET_MODEL,
-    #     max_tokens=1024,
-    #     system=SYSTEM_PROMPT,
-    #     messages=messages
-    # )
-    #
-    # response = json.loads(message.content[0].text)
-    # if response["complete"]:
-    #     break
+    message = client.messages.create(
+        model=SONNET_MODEL,
+        max_tokens=1024,
+        system=SYSTEM_PROMPT,
+        messages=messages
+    )
 
-    EXAMPLE_RESPONSE = {
-        'selector': "a.nav-link-45.produhacks2024[href='#Tickets']",
-        'action': 'click',
-        'value': None,
-        'complete': False,
-        'intention': 'Navigate to the Tickets section to find ticket price information'
-    }
+    # print(f"Loop {MAX_LOOP} plain text:{message.content[0].text}")
+    
+    response = json.loads(message.content[0].text)
+    if response["complete"]:
+        break
 
-    # Use the 'selector' value from the EXAMPLE_RESPONSE dictionary as the CSS selector
-    message = EXAMPLE_RESPONSE['selector']
+    # print the response and specify which loop
+    print(f"Loop {MAX_LOOP}: {response}")
+
+    # EXAMPLE_RESPONSE = {
+    #     'selector': "a.nav-link-45.produhacks2024[href='#Tickets']",
+    #     'action': 'click',
+    #     'value': None,
+    #     'complete': False,
+    #     'explanation': 'Navigate to the Tickets section to find ticket price information'
+    # }
 
     # Wait for a short period to ensure the page has loaded
-    time.sleep(3)
+    time.sleep(1)
 
     # Find the element using the CSS selector with the updated method
-    element = driver.find_element(By.CSS_SELECTOR, message)
+    element = driver.find_element(By.CSS_SELECTOR, response['selector'])
 
     # Click the element
     element.click()
 
     # Close the browser window after a short delay to observe the action
-    time.sleep(3)  # This wait is optional, just to observe the click action
+    time.sleep(1)  # This wait is optional, just to observe the click action
 
+    # Take a screenshot and save it to a file
+    screenshot_name = f'produ_screenshot_{MAX_LOOP}.png'
+    driver.save_screenshot(screenshot_name)
+
+    with open(screenshot_name, "rb") as image_file:
+        image_data = image_file.read()
+
+    # Step 2: Encode the image in base64
+    encoded_image = base64.b64encode(image_data).decode("utf-8")
+
+    messages.append(cont_from_explanation_obj(response["explanation"]))
+    messages.append(cont_from_screenshot_prompt_obj(encoded_image))
 
     # messages.append(response)
     MAX_LOOP -= 1
 
-EXAMPLE_RESPONSE = {'selector': "a.nav-link-45.produhacks2024[href='#Tickets']", 'action': 'click', 'value': None, 'complete': False, 'intention': 'Navigate to the Tickets section to find ticket price information'}
-
 driver.quit()
+
+# print(messages)
+print(response)
