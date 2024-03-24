@@ -84,6 +84,11 @@ const RealTimeComponent = () => {
                 enhance the user experience.
               </p>
             </div>
+            <img
+              src={require("../images/BigRobot.png")}
+              alt="Description"
+              className="big-robot-image"
+            />
             <button
               onClick={() => setCurrentPage(Pages.PROMPT)}
               className="submit-button"
@@ -104,6 +109,11 @@ const RealTimeComponent = () => {
             src={require("../images/image.png")}
             alt="Description"
             className="logo-image"
+          />
+          <img
+            src={require("../images/BigRobot.png")}
+            alt="Description"
+            className="big-robot-image"
           />
           <div className="input-container">
             <h1 className="instruction-text">

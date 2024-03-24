@@ -50,6 +50,16 @@
   padding-top: 15px;
 }
 
+.big-robot-image {
+  position: absolute;
+  top: 500px;
+  left: 420px;
+  bottom: 800px;
+  width: 169px; /* Adjust the size as needed */
+  height: auto; /* Maintain aspect ratio */
+  padding-left: 30px;
+  padding-top: 15px;
+}
 .submit-button {
   background: linear-gradient(90deg, #D4F994 0%, #9FEEAB 33%, #43DCD6 66%, #07BFD9 100%);
   border: none;
@@ -90,19 +100,20 @@
   margin: 20px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
   max-width: 600px; /* Adjust based on your preference */
-  text-align: left; /* Aligns text to the left */
+  text-align: middle; /* Aligns text to the left */
 }
 
 .speech-bubble:after {
-  content: ''; /* This property is necessary and must not be omitted */
-  position: absolute; /* Positions the pseudo-element relative to the speech bubble */
-  bottom: -10px; /* Negative value to position the tail below the speech bubble */
-  left: 50%; /* Start at 50% from the left */
-  border-width: 15px; /* Size of the tail */
-  border-style: solid; /* Required for the border to show */
-  border-color: transparent transparent #fff transparent; /* Only the top border shows */
-  margin-left: -15px; /* Half the width of the tail to center it */
-  transform: translateX(-50%); /* Ensures the tail is centered at the bottom */
+  content: '';
+  color: #ffffff;
+  position: absolute;
+  bottom: -20px; /* pushes the tail below the bubble */
+  left: 5%; /* starts at the center of the bubble */
+  transform: translateX(-50%); /* centers the tail */
+  border-width: 20px;
+  border-style: solid;
+  border-color: transparent transparent #cbc7c7 transparent; /* Only the top border shows */
+  z-index: 1; /* ensures the tail layers above any background elements */
 }
 
 .speech-bubble p {
