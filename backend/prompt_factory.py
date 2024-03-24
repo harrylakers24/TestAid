@@ -73,7 +73,7 @@ def first_dom_prompt_obj(prompt, persona = DEFAULT_READER_USER_PERSONA):
 
                                 It's critical that the CSS selector for buttons is as precise as possible. Only include the "value" field if the action requires inputting or selecting a value
 
-                                Don't return anything but only the JSON, otherwise the response will be invalid. Also don't return any invalid control characters in the JSON.
+                                Don't return anything but only the JSON (only one JSON), otherwise the response will be invalid. Also don't return any invalid control characters in the JSON.
                             """
                 },
             ]
@@ -122,7 +122,7 @@ def cont_from_screenshot_prompt_obj(image_data, prompt, persona = DEFAULT_READER
 
                                 If there are no more relevant actions to take on the current page, return in JSON still.
 
-                                Don't return anything but only the JSON, otherwise the response will be invalid. Also don't return any invalid control characters in the JSON.
+                                Don't return anything but only the JSON (only one JSON), otherwise the response will be invalid. Also don't return any invalid control characters in the JSON.
                             """
                 },
             ],

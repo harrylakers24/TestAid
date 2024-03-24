@@ -171,7 +171,7 @@ const RealTimeComponent = () => {
                 onClick={() => setCurrentPage(Pages.PROMPT)}
                 className="submit-button"
               >
-                New Test
+                new test
               </button>
             </div>
             

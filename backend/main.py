@@ -29,7 +29,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 from dotenv import load_dotenv
 load_dotenv('../')
 
-def start_ai(url = "https://www.ubcbiztech.com/produhacks-2024", prompt = 'Please navigate and find the ticket price.'):
+def start_ai(url = "https://www.ubcbiztech.com/produhacks-2024", prompt = 'Please navigate and find the ticket price.', persona = DEFAULT_READER_USER_PERSONA):
     options = Options()
     options.add_experimental_option("detach", True)
 
@@ -143,6 +143,6 @@ def handle_connect():
 @socketio.on('prompt')
 def handle_prompt(prompt):
     print(prompt)
-    start_ai(prompt['url'], prompt['prompt'])
+    start_ai(prompt['url'], prompt['prompt'], prompt['persona'] if 'persona' in prompt else None)
 
 socketio.run(app, debug=True)

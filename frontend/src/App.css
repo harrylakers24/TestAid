@@ -111,19 +111,6 @@
   text-align: middle; /* Aligns text to the left */
 }
 
-.speech-bubble:after {
-  content: '';
-  color: #ffffff;
-  position: absolute;
-  bottom: -20px; /* pushes the tail below the bubble */
-  left: 5%; /* starts at the center of the bubble */
-  transform: translateX(-50%); /* centers the tail */
-  border-width: 20px;
-  border-style: solid;
-  border-color: transparent transparent #cbc7c7 transparent; /* Only the top border shows */
-  z-index: 1; /* ensures the tail layers above any background elements */
-}
-
 .speech-bubble p {
   margin: 0;
   color: #000; /* Or any color you prefer */
