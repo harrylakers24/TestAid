@@ -142,12 +142,12 @@ const RealTimeComponent = () => {
               className="text-box"
             />
             <button onClick={onClick} className="submit-button">
-              Generate
+              generate
             </button>
           </div>
           {debug && (
             <button onClick={reconnect} className="submit-button">
-              Reconnect
+              reconnect
             </button>
           )}
         </div>
