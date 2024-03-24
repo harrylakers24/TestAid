@@ -123,6 +123,8 @@ def start_ai(url = "https://www.ubcbiztech.com/produhacks-2024", prompt = 'Pleas
         messages.append(cont_from_explanation_obj(response["explanation"]))
         messages.append(cont_from_screenshot_prompt_obj(encoded_image))
 
+        socketio.emit('liveFeedback', response['explanation'])
+
         # messages.append(response)
         MAX_LOOP -= 1
 
