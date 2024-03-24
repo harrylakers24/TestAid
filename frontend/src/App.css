@@ -31,13 +31,14 @@
 .input-container {
   display: flex;
   flex-direction: column;
-   align-items: center;
-   gap: 10px;
+  align-items: center;
+  gap: 10px;
 }
 
 .instruction-text {
   color: #282c34;
   font-size: 30px;
+  font-weight: normal;
 }
 
 .logo-image {
@@ -52,10 +53,10 @@
 
 .big-robot-image {
   position: absolute;
-  top: 500px;
-  left: 420px;
+  top: 550px;
+  left: 380px;
   bottom: 800px;
-  width: 169px; /* Adjust the size as needed */
+  width: 150px; /* Adjust the size as needed */
   height: auto; /* Maintain aspect ratio */
   padding-left: 30px;
   padding-top: 15px;
@@ -69,9 +70,12 @@
   text-align: center;
   text-decoration: none;
   display: inline-block;
-  font-size: 16px;
+  font-size: 20px;
   margin: 4px 2px;
   cursor: pointer;
+  font-weight: bold;
+  width: 200px;
+  height: 55px;
   /* boxShadow: 0 4px 8px 0 rgba(0,0,0,0.2); Uncomment if shadow is desired */
   /* transition: 0.3s; Uncomment if transition is desired */
 }
@@ -80,8 +84,12 @@
   border-radius: 40px;
   height: 40px;
   width: 550px;
-  padding-left: 8px;
-
+  padding-left: 20px;
+  margin-bottom: 15px;
+  border-color: #000;
+  border-width: 2px;
+  border-style: solid;
+  font-size: 16px;
 }
 
 .test-aid-container {

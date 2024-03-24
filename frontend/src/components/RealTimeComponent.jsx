@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
+import IntroBubble from "../images/intro-text-bubble.svg";
 
 const URL = "url";
 const PROMPT = "prompt";
@@ -77,24 +78,32 @@ const RealTimeComponent = () => {
       {currentPage === Pages.START && (
         <div>
           <div className="test-aid-container">
-            <div className="speech-bubble">
+            {/* <div className="speech-bubble">
               <p className="instruction-text">
                 Hi there! 👋 I'm TestAid, your AI-driven companion for user
                 testing. By mimicking user interactions, I help evaluate digital
                 products by pin-pointing issues and providing feedback to
                 enhance the user experience.
               </p>
-            </div>
+            </div> */}
+          <svg width="749" height="417" viewBox="0 0 749 417" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M63.375 345.194C63.375 334.778 58.965 319.927 58.965 319.927L100.854 323.298C100.854 323.298 93.5381 339.061 87.6704 347.149C76.0457 363.172 34.4527 411.589 34.4527 411.589C34.4527 411.589 63.375 370.735 63.375 345.194Z" stroke="black" stroke-width="2.5"/>
+            <rect x="1" y="1" width="747" height="324.723" rx="41" fill="#FFFDFD" stroke="black" stroke-width="2"/>
+            <path d="M61.0491 321.58L99.7937 322.18L96.8413 328.309H62.694L61.0491 321.58Z" fill="white"/>
+            <text fill="black" style={{"white-space": 'pre'}} font-family="HK Grotesk" font-size="35" letter-spacing="0em"><tspan x="488.728" y="118.519">By mimicking </tspan><tspan x="55.2954" y="158.519">user interactions, I help evaluate digital </tspan><tspan x="55.2954" y="198.519">products by pin-pointing issues and </tspan><tspan x="55.2954" y="238.519">providing feedback to enhance the user </tspan><tspan x="55.2954" y="278.519">experience.</tspan></text>
+            <text fill="black" style={{"white-space": 'pre'}} font-family="HK Grotesk" font-size="35" letter-spacing="0em"><tspan x="479.158" y="118.519"> </tspan></text>
+            <text fill="black" style={{"white-space": 'pre'}} font-family="HK Grotesk" font-size="35" letter-spacing="0em"><tspan x="55.2954" y="78.519">Hi there! &#x1f44b; I&#x2019;m TestAid, your AI-driven </tspan><tspan x="55.2954" y="118.519">companion for user testing.</tspan></text>
+          </svg>
             <img
-              src={require("../images/BigRobot.png")}
-              alt="Description"
+              src={require("../images/big-robot.png")}
+              alt="Robot Mascot"
               className="big-robot-image"
             />
             <button
               onClick={() => setCurrentPage(Pages.PROMPT)}
               className="submit-button"
             >
-              Start Here
+              start here
             </button>
             <div>
               {explanation.map((exp, index) => (
