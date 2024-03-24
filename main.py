@@ -1,3 +1,6 @@
+import time
+from telnetlib import EC
+
 import anthropic
 import base64
 import os
@@ -7,6 +10,10 @@ import requests
 import base64
 import json
 
+
+from httpcore import TimeoutException
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
 
 from constants import *
 
@@ -42,7 +49,7 @@ html_content = response.text
 minified = minify_html.minify(html_content, minify_js=True, minify_css=True, ensure_spec_compliant_unquoted_attribute_values=True, keep_spaces_between_attributes=True)
 
 # Close the browser window
-driver.quit()
+# driver.quit()
 
 # Sending image to chatgpt
 # Step 1: Read the image
@@ -168,19 +175,44 @@ while MAX_LOOP > 0:
             }
         )
 
-    message = client.messages.create(
-        model=SONNET_MODEL,
-        max_tokens=1024,
-        system=SYSTEM_PROMPT,
-        messages=messages
-    )
+    # message = client.messages.create(
+    #     model=SONNET_MODEL,
+    #     max_tokens=1024,
+    #     system=SYSTEM_PROMPT,
+    #     messages=messages
+    # )
+    #
+    # response = json.loads(message.content[0].text)
+    # if response["complete"]:
+    #     break
 
-    response = json.loads(message.content[0].text)
-    if response["complete"]:
-        break
+    EXAMPLE_RESPONSE = {
+        'selector': "a.nav-link-45.produhacks2024[href='#Tickets']",
+        'action': 'click',
+        'value': None,
+        'complete': False,
+        'intention': 'Navigate to the Tickets section to find ticket price information'
+    }
+
+    # Use the 'selector' value from the EXAMPLE_RESPONSE dictionary as the CSS selector
+    message = EXAMPLE_RESPONSE['selector']
+
+    # Wait for a short period to ensure the page has loaded
+    time.sleep(3)
+
+    # Find the element using the CSS selector with the updated method
+    element = driver.find_element(By.CSS_SELECTOR, message)
+
+    # Click the element
+    element.click()
+
+    # Close the browser window after a short delay to observe the action
+    time.sleep(3)  # This wait is optional, just to observe the click action
 
 
     # messages.append(response)
     MAX_LOOP -= 1
 
-EXAMPLE_RESPONSE={'selector': "a.nav-link-45.produhacks2024[href='#Tickets']", 'action': 'click', 'value': None, 'complete': False, 'intention': 'Navigate to the Tickets section to find ticket price information'}
+EXAMPLE_RESPONSE = {'selector': "a.nav-link-45.produhacks2024[href='#Tickets']", 'action': 'click', 'value': None, 'complete': False, 'intention': 'Navigate to the Tickets section to find ticket price information'}
+
+driver.quit()
